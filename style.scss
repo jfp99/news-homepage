@@ -1,0 +1,547 @@
+// ==========================================================================
+// Variables
+// ==========================================================================
+$color-primary: hsl(5, 85%, 63%);
+$color-primary-light: hsl(5, 85%, 70%);
+$color-secondary: hsl(35, 77%, 62%);
+$color-neutral-100: hsl(36, 100%, 99%);
+$color-neutral-200: hsl(233, 8%, 79%);
+$color-neutral-300: hsl(236, 13%, 42%);
+$color-neutral-800: hsl(240, 100%, 5%);
+$font-family: 'Inter', sans-serif;
+$font-weight-regular: 400;
+$font-weight-bold: 700;
+$font-weight-extra-bold: 800;
+$border-radius: 0.8rem;
+$transition-duration: 0.2s;
+$breakpoint-mobile: 768px;
+$breakpoint-desktop: 1200px;
+
+// ==========================================================================
+// Mixins
+// ==========================================================================
+@mixin focus-state {
+    outline: 0.2rem solid $color-primary-light;
+    outline-offset: 0.2rem;
+    box-shadow: 0 0 0 0.4rem rgba($color-primary-light, 0.3);
+    }
+
+    @mixin visually-hidden {
+    position: absolute;
+    width: 0.1rem;
+    height: 0.1rem;
+    padding: 0;
+    margin: -0.1rem;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+    }
+
+    @mixin container {
+    max-width: 120rem;
+    margin: 0 auto;
+    padding: 0 2rem;
+    }
+
+    @mixin text-style($size, $weight, $line-height) {
+    font-size: $size;
+    font-weight: $weight;
+    line-height: $line-height;
+    }
+
+    // ==========================================================================
+    // Base Styles
+    // ==========================================================================
+    *,
+    *::before,
+    *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    }
+
+    html {
+    font-size: 62.5%; // 1rem = 10px
+    scroll-behavior: smooth;
+    }
+
+    body {
+    font-family: $font-family;
+    @include text-style(1.6rem, $font-weight-regular, 1.6);
+    color: $color-neutral-300;
+    background-color: $color-neutral-100;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    }
+
+    :focus-visible {
+    @include focus-state;
+    }
+
+    .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    padding: 1rem;
+    background: $color-neutral-800;
+    color: $color-neutral-100;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+
+    &:focus {
+        transform: translateY(100%);
+    }
+    }
+
+    // ==========================================================================
+    // Layout
+    // ==========================================================================
+    .page-wrapper {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    min-height: 100vh;
+    }
+
+    // ==========================================================================
+    // Header & Navigation
+    // ==========================================================================
+    .site-header {
+    padding: 3.2rem 0;
+    position: relative;
+    z-index: 10;
+    background-color: $color-neutral-100;
+
+    nav {
+        @include container;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    }
+
+    .logo-link {
+    display: block;
+    width: 6.4rem;
+    height: 4rem;
+    transition: opacity $transition-duration ease;
+
+    &:hover,
+    &:focus {
+        opacity: 0.8;
+    }
+
+    img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+    }
+
+    #mobile-menu-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 1rem;
+    z-index: 20;
+    width: 4.4rem;
+    height: 4.4rem;
+    position: relative;
+
+    @media (max-width: $breakpoint-mobile) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .menu-icon {
+        display: block;
+        width: 3rem;
+        height: 0.3rem;
+        background: $color-neutral-800;
+        position: relative;
+        transition: background-color 0.2s ease;
+
+        &::before,
+        &::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: $color-neutral-800;
+        left: 0;
+        transition: transform $transition-duration ease;
+        }
+
+        &::before {
+        top: -0.8rem;
+        }
+
+        &::after {
+        top: 0.8rem;
+        }
+    }
+
+    &[aria-expanded="true"] {
+        .menu-icon {
+        background: transparent;
+
+        &::before {
+            transform: translateY(0.8rem) rotate(45deg);
+        }
+
+        &::after {
+            transform: translateY(-0.8rem) rotate(-45deg);
+        }
+        }
+    }
+    }
+
+    .main-menu {
+    display: flex;
+    gap: 3.2rem;
+    list-style: none;
+
+    @media (max-width: $breakpoint-mobile) {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 75%;
+        max-width: 32rem;
+        background: $color-neutral-100;
+        flex-direction: column;
+        padding: 12rem 3.2rem 3.2rem;
+        box-shadow: -0.5rem 0 1rem rgba(0, 0, 0, 0.1);
+        transform: translateX(100%);
+        transition: transform $transition-duration ease;
+        z-index: 15;
+
+        &[hidden] {
+        display: flex;
+        transform: translateX(100%);
+        }
+
+        &:not([hidden]) {
+        transform: translateX(0);
+        }
+    }
+
+    a {
+        color: $color-neutral-300;
+        text-decoration: none;
+        @include text-style(1.6rem, $font-weight-regular, 1.5);
+        transition: color $transition-duration ease;
+        position: relative;
+        padding: 0.8rem 0;
+
+        &:hover,
+        &:focus {
+        color: $color-primary;
+        }
+
+        &[aria-current="page"] {
+        color: $color-neutral-800;
+        font-weight: $font-weight-bold;
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0.3rem;
+            background: $color-primary;
+        }
+        }
+    }
+    }
+
+    .mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 5;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity $transition-duration ease;
+
+    &[hidden] {
+        display: none;
+    }
+
+    &:not([hidden]) {
+        opacity: 1;
+        pointer-events: all;
+    }
+    }
+
+    // ==========================================================================
+    // Main Content
+    // ==========================================================================
+    main {
+    @include container;
+    padding-bottom: 6.4rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3.2rem;
+    grid-template-areas:
+        "featured featured sidebar"
+        "articles articles articles";
+
+    @media (max-width: $breakpoint-mobile) {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+        "featured"
+        "sidebar"
+        "articles";
+        gap: 2.4rem;
+        padding-bottom: 4.8rem;
+    }
+    }
+
+    // ==========================================================================
+    // Featured Article
+    // ==========================================================================
+    .featured-article {
+    grid-area: featured;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3.2rem;
+
+    @media (max-width: $breakpoint-mobile) {
+        grid-template-columns: 1fr;
+        gap: 2.4rem;
+    }
+    }
+
+    .featured-image {
+    grid-column: span 2;
+    border-radius: $border-radius;
+    overflow: hidden;
+
+    @media (max-width: $breakpoint-mobile) {
+        grid-column: span 1;
+    }
+
+    img {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+
+        &:hover {
+        transform: scale(1.02);
+        }
+    }
+    }
+
+    .featured-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 3.2rem;
+
+    @media (max-width: $breakpoint-mobile) {
+        gap: 2.4rem;
+    }
+    }
+
+    .featured-heading {
+    @include text-style(4rem, $font-weight-extra-bold, 1);
+    color: $color-neutral-800;
+    text-align: center;
+    font-family: $font-family;
+
+
+    @media (max-width: $breakpoint-mobile) {
+        @include text-style(3.5rem, $font-weight-extra-bold, 1.1);
+    }
+    }
+
+    .featured-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2.4rem;
+    text-align: justify;
+    align-items: center;
+
+    p {
+        color: $color-neutral-300;
+        @include text-style(1.6rem, $font-weight-regular, 1.6);
+    }
+    }
+
+    .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.6rem 3.2rem;
+    background: $color-primary;
+    color: $color-neutral-100;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5rem;
+    font-weight: $font-weight-bold;
+    width: max-content;
+    transition: all $transition-duration ease;
+    border-radius: $border-radius;
+    @include text-style(1.4rem, $font-weight-bold, 1);
+    border: none;
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+        background: $color-neutral-800;
+        transform: translateY(-0.2rem);
+        box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+    }
+
+    // ==========================================================================
+    // Sidebar
+    // ==========================================================================
+    .news-sidebar {
+    grid-area: sidebar;
+    background: $color-neutral-800;
+    padding: 3.2rem 2.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3.2rem;
+    border-radius: $border-radius;
+
+    @media (max-width: $breakpoint-mobile) {
+        padding: 2.4rem 1.6rem;
+        gap: 2.4rem;
+    }
+    }
+
+    .sidebar-heading {
+    @include text-style(3.2rem, $font-weight-bold, 1.2);
+    color: $color-secondary;
+    }
+
+    .news-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+
+    h3 {
+        a {
+        color: $color-neutral-100;
+        text-decoration: none;
+        @include text-style(2rem, $font-weight-bold, 1.3);
+        transition: color $transition-duration ease;
+
+        &:hover,
+        &:focus {
+            color: $color-secondary;
+        }
+        }
+    }
+
+    p {
+        color: $color-neutral-200;
+        @include text-style(1.5rem, $font-weight-regular, 1.6);
+    }
+    }
+
+    // ==========================================================================
+    // Articles Grid
+    // ==========================================================================
+    .top-articles {
+    grid-area: articles;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.4rem;
+    margin-top: 3.2rem;
+
+    @media (max-width: $breakpoint-mobile) {
+        grid-template-columns: 1fr;
+        gap: 3.2rem;
+        margin-top: 2.4rem;
+    }
+    }
+
+    .article-card {
+    display: grid;
+    grid-template-columns: 10rem 1fr;
+    gap: 2.4rem;
+    align-items: center;
+    border: 0.5px solid $color-secondary;
+    padding: 1rem;
+    border-radius: $border-radius;
+
+    &:hover {
+        transform: scale(1.02);
+        }
+
+    @media (max-width: $breakpoint-mobile) {
+        gap: 1.6rem;
+    }
+
+    figure {
+        img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: $border-radius;
+        transition: transform 0.3s ease;
+
+        &:hover {
+            transform: scale(1.05);
+        }
+        }
+    }
+    }
+
+    .card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    }
+
+    .card-number {
+    @include text-style(3.2rem, $font-weight-bold, 1);
+    color: $color-neutral-200;
+    }
+
+    .card-title {
+    a {
+        color: $color-neutral-800;
+        text-decoration: none;
+        @include text-style(1.8rem, $font-weight-extra-bold, 1.2);
+        transition: color $transition-duration ease;
+
+        &:hover,
+        &:focus {
+        color: $color-primary;
+        }
+    }
+    }
+
+    .card-text {
+    color: $color-neutral-300;
+    @include text-style(1.5rem, $font-weight-regular, 1.6);
+    }
+
+    // ==========================================================================
+    // Utility Classes
+    // ==========================================================================
+    .visually-hidden {
+    @include visually-hidden;
+    }
+
+    .sr-only {
+    @include visually-hidden;
+}
